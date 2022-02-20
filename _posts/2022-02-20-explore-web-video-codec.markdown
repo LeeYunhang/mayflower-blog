@@ -34,7 +34,7 @@ categories: tech
 - 变换压缩
   - 去掉视觉冗余，利用人眼对总体亮度的敏感程度远大于细节信息，利用正交变换去掉图片中的细 (高) 节(频)信息，常见的有 DCT(离散余弦变换)，类似还有傅立叶变换等等。
 - 熵编码
-  - 去掉编码冗余，编码后数据出现的概率更加均等，H.264 采用了 [CABAC](https://www.google.com/search?q=CABAC)，除此之外常见的还有哈夫曼 (Huffman) 等等，** 因此编码后的视频文件使用 gzip 等基于熵编码的压缩算法收效甚微 **。
+  - 去掉编码冗余，编码后数据出现的概率更加均等，H.264 采用了 [CABAC](https://www.google.com/search?q=CABAC)，除此之外常见的还有哈夫曼 (Huffman) 等等，**因此编码后的视频文件使用 gzip 等基于熵编码的压缩算法收效甚微**。
 
   
 ## 发展史
@@ -45,7 +45,7 @@ categories: tech
 
 ![](http://mayflower-blog.oss-cn-beijing.aliyuncs.com/blog/16453515263065.jpg?x-oss-process=image/auto-orient,1/interlace,1/quality,q_80)
 
-**h.26x 系列 **
+**h.26x 系列**
 
 以 H.264 为例，乃由国际标准化组织 (ISO) 动态图像专家组和国际电信联盟 (ITU) 共同制定的压缩标准，并收录到 ISO 的 MPEG-4 Part 10 中。ISO 称呼其为 AVC(高级视频编码)，ITU 则以 H.264 命名，一般写成 H.264/AVC。
 
@@ -56,7 +56,7 @@ H.264 专利费由 [MPEG LA](https://zh.wikipedia.org/wiki/MPEG_LA) 代收，一
 > mp4 并非 MPEG-4 的缩写，而是 MPEG-4 Part 14 标准的产物；同理 mp3 则来自于 MPEG-1 Audio Layer III 标准，不是 MPEG-3 的缩写。
 
 
-** 免版权税系列 **
+**免版权税系列**
 
 在 2003 年 H.264/AVC 的第一版被完成。在同一年，一家叫做 TrueMotion 的公司发布了他们的免版税有损视频压缩的视频编解码器，称为 VP3。后被 Google 收购，12 年发布了 VP9，为了抗衡 HEVC，Google 和 Mozilla、Netflix，以及硬件厂商 AMD、Intel，还有网络设备制造商 Cisco 等公司组成了 AOMedia(开放媒体联盟)，于 17 年发布了 AV1。
 
@@ -68,7 +68,7 @@ H.264 专利费由 [MPEG LA](https://zh.wikipedia.org/wiki/MPEG_LA) 代收，一
 
 相较 AVC 同等清晰度下减少了 50% 的体积，甚至优于 HEVC。YouTube、Netflix 和 Bilibili 等视频网站也在转向 AV1。AV1 可以让这些内容提供商少缴纳 50% 的流量税。
 
-** 推广阻力 **
+**推广阻力**
 Apple 公司 18 年加入了 AOMedia，但至今没有支持硬件解码，使得 AV1 的视频在 macOS 解码效率极低。
 
 ![](http://mayflower-blog.oss-cn-beijing.aliyuncs.com/blog/16453521648785.jpg?x-oss-process=image/auto-orient,1/interlace,1/quality,q_80)
@@ -84,7 +84,7 @@ Apple 公司 18 年加入了 AOMedia，但至今没有支持硬件解码，使�
 
 如图，从对这四种解码的 [性能统计数据](http://www.rtcbits.com/2021/02/webrtc-video-codecs-performance.html) 来看，在 MacBook Pro (i9) 上因为 H.264 支持硬解，CPU 占用变化不大。而 VP8、VP9 和 AV1 由于软解非常占用 CPU，AV1 更甚。
 
-相对硬解，硬编要严峻得多，可能由于视频解码远大于编码次数，市面上的消费级 CPU/GPU 都不支持 AV1 编码，使得 AV1 编码的时间和硬件成本非常高 **。据说未来至强等企业级处理器会支持 **。
+相对硬解，硬编要严峻得多，可能由于视频解码远大于编码次数，市面上的消费级 CPU/GPU 都不支持 AV1 编码，使得 AV1 编码的时间和硬件成本非常高**。据说未来至强等企业级处理器会支持**。
 
 ## WebCodecs
 现代 Web 已提供 [Media Stream API](https://developer.mozilla.org/en-US/docs/Web/API/MediaStream_Recording_API)、[Media Recording API](https://developer.mozilla.org/en-US/docs/Web/API/MediaStream_Recording_API)、[Media Source API](https://developer.mozilla.org/en-US/docs/Web/API/Media_Source_Extensions_API)、[WebRTC API](https://developer.mozilla.org/en-US/docs/Web/API/WebRTC_API) 支持音视频需求，但仍缺少帧级别的编解码 API。
@@ -115,11 +115,11 @@ Apple 公司 18 年加入了 AOMedia，但至今没有支持硬件解码，使�
 
 ### 代码实践
 
-** 功能 **
+**功能**
 
 把 canvas 画面编码成 H.264 流，使用 [ffmpeg.wasm](https://github.com/ffmpegwasm/ffmpeg.wasm) 封装成 mp4 文件，并导出到本地。
 
-** 初始化 VideoEncoder**
+**初始化 VideoEncoder**
 
 
 ```typescript
