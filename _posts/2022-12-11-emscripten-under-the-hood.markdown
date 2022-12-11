@@ -6,7 +6,6 @@ categories: tech
 ---
 
 ## 前言
-WebSDK 在智创云已经驱动了模板预览/混剪/卡片模板以及通用视频编辑器，内置的 WASM 模块由 Emscripten 从 VE C++ 编译而成，附带一些 JS 胶水代码。
 
 本文面向已经写过 Emscripten 三方库的老手和从没听说过 Emscripten 的前端开发者。将努力从不同视角还原 Emscripten 事实标准框架的运行原理，打破 WASM 黑盒，收获 WASM 和原生应用的性能&架构差异；通过对比理解 JavaScript 中一些理所当然现象背后隐藏的复杂逻辑。
 
@@ -372,11 +371,6 @@ wasm.js 和 worker.js 来自于多份"预处理 JS"经 `parseTools.js` 解析，
 
 
 预处理完的代码会交给 `eval` 执行 `mergeInto`，将函数定义收集到统一对象 "Module" ，经过"二次预处理"后，输出到 wasm.js，挂载到 `Module['asm']`，在实例化 WASM 时传给它。"__sig"会生成一份"函数定义"，遇到 C++ 函数重载，要求签名一致。
-
-![](http://mayflower-blog.oss-cn-beijing.aliyuncs.com/blog/16707679877173.jpg?x-oss-process=image/auto-orient,1/interlace,1/quality,q_80)
-
-
-VESDK 快速导入读取 Blob 函数。
 
 > 运行时动态生成函数可通过 WebAssembly.Table 实现，原理是 JS 和 C++ 侧把各自的函数对象、函数指针绑定到 Table 指定 index 中，Table 完成封装。
 
