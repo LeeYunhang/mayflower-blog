@@ -193,6 +193,7 @@ Emscripten 提供了 WebAssembly.Memory.buffer 的多种 HEAP View。在**取对
 如图，fetchXHR 是定义在 library_fetch.js 的函数，为 C/C++ 提供网络能力支持。调用 fetchXHR 前，C/C++ 侧先申请一段 emscripten_fetch_t 结构体对应大小的内存，拿到内存首字节指针，给偏移量为"url"赋值。JS 则按相同偏移取值。
 
 ### 文件系统
+
 Emscripten 可以在浏览器和 Node.js 运行，编译到 Node.js 使用自带的 fs API；浏览器出于安全考虑，无法访问宿主文件系统。而且 JS 只能异步读取文件 buffer，而 C/C++ 使用 POSIX API 同步读取，因此 Emscripten 提供了一套虚拟文件系统的 POSIX 实现，C/C++ 使用这套 FS 可直接 include fstream、stdio.h 这两个头文件。
 
 ![](http://mayflower-blog.oss-cn-beijing.aliyuncs.com/blog/16707683786211.jpg?x-oss-process=image/auto-orient,1/interlace,1/quality,q_80)
@@ -213,6 +214,7 @@ Emscripten 可以在浏览器和 Node.js 运行，编译到 Node.js 使用自带
 Emscripten: Under the hood
 
 ## 前言
+
 WebSDK 在智创云已经驱动了模板预览/混剪/卡片模板以及通用视频编辑器，内置的 WASM 模块由 Emscripten 从 VE C++ 编译而成，附带一些 JS 胶水代码。
 
 本文面向已经写过 Emscripten 三方库的老手和从没听说过 Emscripten 的前端开发者。将努力从不同视角还原 Emscripten 事实标准框架的运行原理，打破 WASM 黑盒，收获 WASM 和原生应用的性能&架构差异；通过对比理解 JavaScript 中一些理所当然现象背后隐藏的复杂逻辑。
@@ -250,6 +252,7 @@ POSIX 系统横截面示意图:
 printf 最终把结果写入 /dev/stdout [设备文件](https://en.wikipedia.org/wiki/Device_file) 中，系统会将指令发送到对应驱动，在终端显示"hello world"。
 
 ### C++ to Web
+
 WebAssembly 设计之初就考虑了 Web 的移植和性能问题，现在 LLVM backend 已经能输出 WASM 格式的二进制汇编文件。Emscripten 集成了 LLVM clang 和 backend 把 C++ 转换成 WASM，Emscripten 工作流程:
 
 ![](http://mayflower-blog.oss-cn-beijing.aliyuncs.com/blog/16707665265496.jpg?x-oss-process=image/auto-orient,1/interlace,1/quality,q_80)
@@ -299,6 +302,7 @@ LLVM IR 规范让混合编译变得更加容易，backend 标准化了交叉编�
 `emscripten_set_main_loop` 第二个参数表示循环周期，如果是 0 则使用 requestAnimationFrame。
 
 **run 函数**
+
 run 函数负责调用各种 pre/post 回调钩子，完成生成 WASM 实例后的初始化。时机有 **wasm.js** 自执行阶段和 **removeRunDependency** 移除完所有依赖。
 
 ![](http://mayflower-blog.oss-cn-beijing.aliyuncs.com/blog/16707674174191.jpg?x-oss-process=image/auto-orient,1/interlace,1/quality,q_80)
@@ -331,13 +335,16 @@ run 函数负责调用各种 pre/post 回调钩子，完成生成 WASM 实例后
 销毁线程分为回收和完全杀死两种，回收释放线程内存，worker 可留作下一次复用，节约启动时间；杀死则彻底销毁 worker。
 
 ## 拆机
+
 ### 产物分析
+
 完整的 Emscripten 产物包含三个文件：
 1. .wasm 二进制文件，C/C++ 逻辑转译产物
 2. wasm.js，负责开启启动，还有承载了 POSIX 在 Web 上的模拟实现
 3. worker.js，PThread 的 worker 实现，建立和主线程绑定关系后交给 wasm.js 启动
 
 **转译 C/C++**
+
 Emscripten 内部使用 clang 编译 C/C++ 代码，被编译的代码分为业务工程代码、内部框架代码和静态库三部分。复杂的业务工程可能需要由 make 或 Ninja 等规则工具。emcc 在交给 clang 之前，会把 musl 中 POSIX 系统声明以**文件粒度**替换成 Emscripten 实现，使用 .py 脚本拼接硬编码，生成 Ninja 规则，指导**链接顺序**：
 
 ![](http://mayflower-blog.oss-cn-beijing.aliyuncs.com/blog/16707677925828.jpg?x-oss-process=image/auto-orient,1/interlace,1/quality,q_80)
@@ -359,6 +366,7 @@ musl libc 中没有的函数，需要引入 libpng 和 libogg 等第三方库，
 
 
 **胶水 JS**
+
 wasm.js 和 worker.js 来自于多份"预处理 JS"经 `parseTools.js` 解析，按行匹配代码，检测到宏执行对应操作，相当于一个模板引擎。
 
 ![](http://mayflower-blog.oss-cn-beijing.aliyuncs.com/blog/16707679376283.jpg?x-oss-process=image/auto-orient,1/interlace,1/quality,q_80)
@@ -396,6 +404,7 @@ Emscripten 提供了 WebAssembly.Memory.buffer 的多种 HEAP View。在**取对
 如图，fetchXHR 是定义在 library_fetch.js 的函数，为 C/C++ 提供网络能力支持。调用 fetchXHR 前，C/C++ 侧先申请一段 emscripten_fetch_t 结构体对应大小的内存，拿到内存首字节指针，给偏移量为"url"赋值。JS 则按相同偏移取值。
 
 ### 文件系统
+
 Emscripten 可以在浏览器和 Node.js 运行，编译到 Node.js 使用自带的 fs API；浏览器出于安全考虑，无法访问宿主文件系统。而且 JS 只能异步读取文件 buffer，而 C/C++ 使用 POSIX API 同步读取，因此 Emscripten 提供了一套虚拟文件系统的 POSIX 实现，C/C++ 使用这套 FS 可直接 include fstream、stdio.h 这两个头文件。
 
 ![](http://mayflower-blog.oss-cn-beijing.aliyuncs.com/blog/16707683786211.jpg?x-oss-process=image/auto-orient,1/interlace,1/quality,q_80)
