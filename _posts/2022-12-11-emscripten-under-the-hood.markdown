@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "Emscripten: Under the hood"
-date:   2022-12-11 22:16:37 +0800
+date:   2022-12-11 22:26:37 +0800
 categories: tech
 ---
 
